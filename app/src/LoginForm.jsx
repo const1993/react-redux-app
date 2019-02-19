@@ -1,20 +1,56 @@
 import React, {Fragment} from 'react';
+import {connect} from 'react-redux';
+import {login, logout} from './redux/reducer'
 
-export default class LoginForm extends React.Component {
+class LoginForm extends React.Component {
+    state = {
+    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            login: props.login,
+            password: props.password
+        }
+    }
+
+    loginChange = (e) => {
+        const login = e.target.value;
+        this.setState({login})
+    };
+
+    passwordChange = (e) => {
+        const password = e.target.value;
+        this.setState({password})
+    };
+
+    handleLogin = () => {
+        debugger
+        login(this.state)
+    };
 
     render() {
         return(
-            <form method="get" action="http://google.com">
+            <form>
                 <span>Login:</span>
-                <input/>
+                <input onChange={this.loginChange}/>
                 <span>Password</span>
-                <input type="password"/>
+                <input onChange={this.passwordChange} type="password"/>
 
-                <button type="submit">GO</button>
+                <button onClick={this.handleLogin}>GO</button>
+
+                <span>{this.state.login}</span>
+                <span>{this.state.password}</span>
             </form>
-
         );
     }
-
 }
+const mapToProps = (store) => {
+    return {
+        login: store.name,
+        password: store.password,
+    }
+};
+const dispatchToProps = {login, logout};
 
+export default connect(mapToProps, dispatchToProps)(LoginForm)
