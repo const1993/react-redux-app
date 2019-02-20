@@ -25,8 +25,7 @@ class LoginForm extends React.Component {
     };
 
     handleLogin = () => {
-        debugger
-        login(this.state)
+        this.props.login(this.state)
     };
 
     render() {
@@ -45,12 +44,11 @@ class LoginForm extends React.Component {
         );
     }
 }
-const mapToProps = (store) => {
-    return {
-        login: store.name,
-        password: store.password,
-    }
-};
+const mapToProps = (store) => ({
+    login: store.name,
+    password: store.password,
+});
+
 const dispatchToProps = {login, logout};
 
 export default connect(mapToProps, dispatchToProps)(LoginForm)
