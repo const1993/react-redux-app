@@ -1,18 +1,54 @@
 import React, { Component } from 'react';
 import './App.css';
-import LoginForm from './LoginForm';
+import LoginPage from './loginPage/LoginPage'
+import {Router, Route} from "react-router-dom";
+import { history } from './redux/helpers/history';
+import {alertActions} from "./redux/actions";
+import {connect} from "react-redux";
+import RegisterPage from "./registerPage/RegisterPage";
+import {PrivateRoute} from "./components/PrivateRoute";
+import HomePage from "./homePage/HomePage";
 
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <div>
-          <LoginForm/>
-        </div>
-      </div>
-    );
-  }
+    constructor(props) {
+        super(props);
+
+        const { dispatch } = this.props;
+        history.listen((location, action) => {
+            // clear alert on location change
+            dispatch(alertActions.clear());
+        });
+    }
+
+    render() {
+        const { alert } = this.props;
+        return (
+            <div className="jumbotron">
+                <div className="container">
+                    <div className="col-sm-8 col-sm-offset-2">
+                        {alert.message &&
+                        <div className={`alert ${alert.type}`}>{alert.message}</div>
+                        }
+                        <Router history={history}>
+                            <div>
+                                <PrivateRoute exact path="/" component={HomePage} />
+                                <Route path="/login" component={LoginPage} />
+                                <Route path="/register" component={RegisterPage} />
+                            </div>
+                        </Router>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
-export default App;
+function mapStateToProps(state) {
+    const { alert } = state;
+    return {
+        alert
+    };
+}
+
+export default connect(mapStateToProps)(App);
